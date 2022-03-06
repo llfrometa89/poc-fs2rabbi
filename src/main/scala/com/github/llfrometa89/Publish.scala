@@ -6,10 +6,9 @@ import cats.implicits._
 import dev.profunktor.fs2rabbit.effects.MessageEncoder
 import dev.profunktor.fs2rabbit.interpreter.RabbitClient
 import dev.profunktor.fs2rabbit.json.Fs2JsonEncoder
-import dev.profunktor.fs2rabbit.model.AckResult.Ack
 import dev.profunktor.fs2rabbit.model.AmqpFieldValue.StringVal
 import dev.profunktor.fs2rabbit.model._
-import fs2.{Pipe, Pure, Stream}
+import fs2.{Pipe, Stream}
 import io.circe.Encoder
 
 import java.nio.charset.StandardCharsets.UTF_8

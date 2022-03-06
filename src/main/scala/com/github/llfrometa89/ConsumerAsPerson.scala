@@ -14,8 +14,6 @@ import io.circe._
 
 import java.nio.charset.StandardCharsets.UTF_8
 
-//https://fs2-rabbit.profunktor.dev/consumers/json.html
-
 object ConsumerAsPerson extends IOApp.Simple {
 
   override def run: IO[Unit] =

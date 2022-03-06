@@ -52,13 +52,11 @@ class PublishFlow[F[_] : Async, A](publisher: AmqpMessage[String] => F[Unit]) {
   def encoderPipe[T: Encoder]: Pipe[F, AmqpMessage[T], AmqpMessage[String]] =
     _.map(jsonEncoder.jsonEncode[T])
 
-  def loggerPipe: Pipe[F, AmqpEnvelope[String], AmqpEnvelope[String]] = _.evalMap { amqpMsg =>
+  def loggerPipe: Pipe[F, AmqpMessage[String], AmqpMessage[String]] = _.evalMap { amqpMsg =>
     Async[F].delay(println(s"Publish: $amqpMsg")).as(amqpMsg)
   }
 
   def putStrLn[F[_]: Sync, A](a: A): F[Unit] = Sync[F].delay(println(a))
-
-  val jsonPipe: Pipe[Pure, AmqpMessage[Person], AmqpMessage[String]] = _.map(jsonEncoder.jsonEncode[Person])
 
   val headers: Map[String, AmqpFieldValue] = Map(
     Headers.XMessageID -> StringVal(java.util.UUID.randomUUID().toString),
@@ -71,7 +69,9 @@ class PublishFlow[F[_] : Async, A](publisher: AmqpMessage[String] => F[Unit]) {
 
   val flow: Stream[F, Unit] =
     Stream(
-      Stream(message).covary[F].through(encoderPipe[Person]).evalMap(publisher)
+      Stream(message).covary[F]
+        .through(encoderPipe[Person])
+        .through(loggerPipe)
+        .evalMap(publisher)
     ).parJoin(3)
-//.through(loggerPipe)
 }

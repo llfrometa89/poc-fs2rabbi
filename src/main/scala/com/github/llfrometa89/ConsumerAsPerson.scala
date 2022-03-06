@@ -16,7 +16,7 @@ import java.nio.charset.StandardCharsets.UTF_8
 
 //https://fs2-rabbit.profunktor.dev/consumers/json.html
 
-object Consumer extends IOApp.Simple {
+object ConsumerAsPerson extends IOApp.Simple {
 
   override def run: IO[Unit] =
     RabbitClient.resource[IO](RabbitConfig.config).use { implicit client =>
